@@ -11,67 +11,41 @@ h1{
   font-family: "Lucida Console", Monaco, monospace;
 }
 
-select{
-  background-color: inherit;
-  color: white;
-  border: none;
-  font-size: 20px;
+p{
+  font-size: 24px;
 }
-
-#button-panel{
-  width: 80%;
-  margin-left: 10%;
-  margin-top: 2%;
-  border: none;
-}
-
-#dropdown-panel{
-  width: 80%;
-  margin-left: 10%;
-  margin-top: 2%;
-  border: none;
-}
-
-.dropdown-menu{
-  width: 25%;
-  border: none;
-}
-
-.drop-form{
-  width: 100%;
-  border: none;
-}
-
 
 td{
   text-align: center;
 }
 
-.circle-button{
-    background-color: #00bfff;
-    border: 2px solid white;
-    width: 200px;
-    max-width: 100%;
-    height: 200px;
-    max-height: 100%;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    display: inline-block;
-    font-size: 24px;
-    margin: 4px 2px;
-    border-radius: 50%;
-    outline: none;
+svg g{
+  font-size: 20px;
+  color: #fff;
 }
 
-.circle-button:hover{
-  font-size: 24px;
+select{
+  background-color: inherit;
+  color: white;
+  border: none;
+  font-size: 2rem;
 }
 
-.circle-button:active{
-  background-color: black;
+select:focus{
+  outline: none;
 }
 
+option{
+  color: blue;
+}
+
+.footers{
+  height: 5vw;
+}
+
+td{
+  text-align: center;
+}
 
 .axis path,
 .axis line {
@@ -83,11 +57,11 @@ td{
 .axis text {
   fill: white;
 }
-
+/*
 .bar {
   fill: white;
 }
-
+*/
 .bar:hover {
   fill: blue ;
 }
@@ -95,6 +69,10 @@ td{
 
 .x.axis text{
   display: none;
+}
+
+.y.axis text{
+  font-size: 20px;
 }
 
 .d3-tip {
@@ -111,7 +89,6 @@ td{
   box-sizing: border-box;
   display: inline;
   font-size: 10px;
-  width: 100%;
   line-height: 1;
   color: rgba(0, 0, 0, 0.8);
   content: "\25BC";
@@ -125,3 +102,130 @@ td{
   top: 100%;
   left: 0;
 }
+
+
+/* dropdown panel CSS */
+
+#dropdown-panel{
+  width: 70%;
+  margin-left: 25%;
+  margin-top: 2%;
+  border: none;
+  display: inline-table;
+}
+
+.dropdown-menu{
+  width: 25%;
+  border: none;
+}
+
+.drop-form{
+  width: 100%;
+  border: none;
+}
+
+select{
+  background-color: inherit;
+  color: white;
+  border: none;
+  font-size: 20px;
+}
+
+select:focus{
+  outline: none;
+}
+
+option{
+  color: blue;
+}
+
+
+/* hamburger CSS */
+
+.menu-container {
+  position: absolute;
+  width: 3rem;
+  height: 5rem;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+  transition-delay: .3s;
+}
+
+.menu {
+  position: relative;
+  width: 10rem;
+  height: 10rem;
+  background-color: #00bfff;
+  border-radius: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  transition: all .3s;
+}
+
+#hamburger {
+  display: none;  
+}
+
+label {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 2;
+  cursor: pointer;
+}
+label:before {
+  content: "";
+  position: absolute;
+  top: 65%;
+  left: 65%;
+  width: 1em;
+  height: 0.15em;
+  background: white;
+  box-shadow: 0 0.25em 0 0 white, 0 0.5em 0 0 white;
+  -webkit-transform: scale(2);
+          transform: scale(2);
+}
+
+#hamburger:checked ~ .menu-container {
+  width: 30vw;
+  height: 100vh;
+  transition-delay: 0s;
+}
+
+#hamburger:checked ~ .menu-container .menu {
+  width: 250vh;
+  height: 250vh;
+  transition: all .3s;
+}
+
+.menu-container .links {
+  position: absolute;
+  left: 10vw;
+  top: 30vh;
+  z-index: 3;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.menu-container .links p {
+  display: block;
+  color: white;
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+.menu-container .links p:hover{
+  color: red;
+}
+
+#hamburger:checked ~ .content {
+  padding-left: 35vw;
+  transition: all .2s;
+  transition-delay: 0s;
+}
+

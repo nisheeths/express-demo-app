@@ -10,8 +10,13 @@ var monk = require('monk');
 var db = monk('localhost:27017/UPP-DB');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
+var caseRouter = require('./routes/cases');
+var abscondRouter = require('./routes/absconders');
+var propertyRouter = require('./routes/property');
+var caseDelayRouter = require('./routes/casedelay');
+var captureDelayRouter = require('./routes/capturedelay');
+var complaintsRouter = require('./routes/complaints');
+var contribsRouter = require('./routes/contribs');
 
 var app = express();
 
@@ -33,7 +38,13 @@ app.use(function(req,res,next){
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/cases', caseRouter);
+app.use('/absconders', abscondRouter);
+app.use('/property', propertyRouter);
+app.use('/casedelay', caseDelayRouter);
+app.use('/capturedelay', captureDelayRouter);
+app.use('/complaints', complaintsRouter);
+app.use('/contribs', contribsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -3,30 +3,52 @@ html
   head
     title  CCTNS Dashboard
     link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
-  body
+    script(src='http://d3js.org/d3.v3.min.js')
+    script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
+    
+  body    
+    input(type="checkbox" id="hamburger" name="hamburger")
+    label(for="hamburger")
+    .menu-container
+      .menu
+      .links                
+        p 
+          strong अपराध सम्बन्धी
+        p
+          select#crimes(onclick='load_data(this.id)')
+            option(id="crime1" value='1') लंबित विवेचनायें
+            option(id="crime2" value='2') वांछित अपराधी
+            option(id="crime3" value='3') संपत्ति बरामदगी
+            option(id="crime4" value='4') विवेचना पूर्ण समय
+            option(id="crime5" value='5') गिरफ़्तारी समय
+            option(id="crime7" value='7') Analytics
+        p 
+          strong नागरिक सेवाये
+        p
+          select#services(onclick='load_data(this.id)')
+            option(id="service1" value='6') शिकायत           
     table#dropdown-panel
       tr
         td.dropdown-menu
-          p Zone
-          form#zone.drop-form
-            select
+          p जोन
+          form.drop-form
+            select#s0
               option All
         td.dropdown-menu
-          p Range
-          form#range.drop-form
-            select
+          p परिक्षेत्र
+          form.drop-form
+            select#s1
               option All
         td.dropdown-menu
-          p District
-          form#district.drop-form
-            select
+          p जनपद
+          form.drop-form
+            select#s2
               option All
         td.dropdown-menu
-          p Chowki
-          form#ps.drop-form
-            select
+          p थाना
+          form.drop-form
+            select#s3
               option All
+    script(type='text/javascript', src='/javascripts/script.js') 
 
-    script(src='http://d3js.org/d3.v3.min.js')
-    script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
-    script(type='text/javascript', src='/javascripts/script.js')
+    

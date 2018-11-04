@@ -4,15 +4,38 @@ html
     title  CCTNS Dashboard
     link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
   body
-    table#button-panel
-      tbody
-        tr
-          td
-            button#b1.circle-button(onclick='load_data(this.id)')  लंबित विवेचनाएं
-          td
-            button#b2.circle-button(onclick='load_data(this.id)')  वांछित अपराधी
-          td
-            button#b3.circle-button(onclick='load_data(this.id)') संपत्ति बरामदगी
+    table#dropdown-panel
+      tr
+        td.dropdown-menu
+          p जोन
+          form.drop-form
+            select#s0
+              option All
+        td.dropdown-menu
+          p परिक्षेत्र
+          form.drop-form
+            select#s1
+              option All
+        td.dropdown-menu
+          p जनपद
+          form.drop-form
+            select#s2
+              option All
+        td.dropdown-menu
+          p थाना
+          form.drop-form
+            select#s3
+              option All
+    table#plots
+      tr
+        td#plot1.plots
+        td#plot2.plots
+      tr
+        td.footers
+          p अपराध सम्बन्धी
+        td.footers
+          p नागरिक सेवा सम्बन्धी
+
     script(src='http://d3js.org/d3.v3.min.js')
     script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
     script(type='text/javascript', src='/javascripts/script.js')

@@ -1,0 +1,83 @@
+var express = require('express');
+var router = express.Router();
+//var Batsmen = require('../models/Batsmen');
+//var Cases = require('../models/Cases');
+
+var eventStrings = ['कुल लंबित विवेचनाए' ,
+'लंबित विवेचनाएं (जघन्य अपराध)',
+'लंबित विवेचनाएं (गैंगस्टर एक्ट)',
+'कुल गिरफ़्तारी/आत्मसमर्पण',
+'गिरफ़्तारी/आत्मसमर्पण (जघन्य अपराध)',
+'गिरफ़्तारी/आत्मसमर्पण (गैंगस्टर एक्ट)',
+'शिकायत ',
+'किरायेदार/ पी . जी . सत्यापन',
+'घरेलू सहायता सत्यापन',
+'कर्मचारी सत्यापन',
+'चरित्र प्रमाणपत्र',
+'पोस्टमॉर्टेम रिपोर्ट',
+'कार्यक्रम/ प्रदर्शन अनुरोध',
+'जुलूस अनुरोध',
+'विरोध/हड़ताल अनुरोध',
+'फिल्म शूटिंग अनुरोध ',
+'ठेकेदारी हेतु चरित्र प्रमाणपत्र'
+];
+
+
+function createResObject(){
+	var out = [];
+	for(i=0;i<eventStrings.length;i++){
+		var obj = {_id: eventStrings[i], count: Math.round(100*Math.random())};
+		out.push(obj);
+	}
+	return out;
+}
+
+
+router.get('/', function(req,res){
+	var db = req.db;
+	var collection = db.get("cases");
+	var output = createResObject();
+	collection.aggregate([{$group: {_id: "$ZONE_NAME"}}], function(e, keys){
+			res.json([output, keys]);
+	});
+});
+
+
+router.get('/:ZONE_NAME', function(req,res){
+	var db = req.db;
+	var collection = db.get("cases");
+	var output = createResObject();
+	collection.aggregate([{$match: {"ZONE_NAME": req.params['ZONE_NAME']}}, {$group: {_id: "$RANGE_NAME"} }], function(e, keys){
+		 res.json([output, keys]);
+	});
+});
+
+router.get('/:ZONE_NAME/:RANGE_NAME', function(req,res){
+	var db = req.db;
+	var collection = db.get("cases");
+	var output = createResObject();
+	collection.aggregate([{$match: {"RANGE_NAME": req.params['RANGE_NAME']}}, {$group: {_id: "$DISTRICT"} }], function(e, keys){
+		 res.json([output, keys]);
+	});
+});
+
+router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT', function(req,res){
+	var db = req.db;
+	var collection = db.get("cases");
+	var output = createResObject();
+  collection.aggregate([{$match: {"DISTRICT": req.params['DISTRICT']}}, {$group: {_id: "$PS"} }], function(e, keys){
+	  res.json([output, keys]);
+	});
+});
+
+router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:PS', function(req,res){
+	var db = req.db;
+	var collection = db.get("cases");
+	var output = createResObject();
+  collection.aggregate([{$match: {"PS": req.params['PS']}}, {$group: {_id: "$PS"} }], function(e, keys){
+	  res.json([output, keys]);
+	});
+});
+
+
+module.exports = router;
