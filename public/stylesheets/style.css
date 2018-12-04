@@ -67,12 +67,16 @@ td{
 }
 
 
-.x.axis text{
+.x.axis .tick{
   display: none;
 }
 
+.x.axis text{
+  font-size: 24px;
+}
+
 .y.axis text{
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .d3-tip {

@@ -1,7 +1,7 @@
 
 
 
-var myJson, viewLevel = 0, viewString = 'जोन', ylabel = "Pending case %", alertThreshold = 0.6, viewFlag = 0;
+var myJson, viewLevel = 0, viewString = 'जोन', xlabel = 'All', ylabel = "Pending case %", alertThreshold = 0.6, viewFlag = 0;
 var formatPercent = d3.format(".0%");
 
 var win = window, docm = document, em = docm.documentElement, gin = document.body;
@@ -44,7 +44,7 @@ function populateDropDowns(level, entityList){
       }
       select.appendChild(el);
       select.onchange = function(){
-        console.log(this.value);
+        console.log(this.value);        
         viewString = this.value;
         user_input.api = user_input.api + '/' + this.value;
       }
@@ -55,7 +55,7 @@ function populateDropDowns(level, entityList){
 function setViewString(level){
 	switch(level){
 	case 0:
-	  viewString = 'जोन';
+    viewString = 'जोन';    
 	  break;
 	case 1:
 	  viewString = 'परिक्षेत्र';
@@ -167,15 +167,21 @@ function drawGraph(data){
 svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+    .call(xAxis)
+  .append("text")
+    .attr("x", 260)
+    .attr("y", 50)
+    .style("text-anchor", "middle")
+    .text(xlabel);
+
 
 svg.append("g")
     .attr("class", "y axis")
     .call(yAxis)
   .append("text")
     .attr("transform", "rotate(-90)")
-    .attr("x",-150)
-    .attr("y", -100)
+    .attr("x",-250)
+    .attr("y", -125)
     .attr("dy", "1.91em")
     .style("text-anchor", "middle")
     .text(ylabel);
@@ -200,6 +206,7 @@ svg.selectAll(".bar")
     .on('click', function(d){
 	if(!event.detail || event.detail == 1){
           console.log(d._id);
+          xlabel = d._id;
           user_input.api = user_input.api + '/' + d._id;
 	  svg.selectAll("*").remove();
 	}
