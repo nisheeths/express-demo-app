@@ -1,13 +1,32 @@
 body{
-  background-color: #00bfff;
-  color: white;
+  background-color: white;
+  color: black;
   font-family: Verdana, Geneva, sans-serif;
 }
 
+#topbar{
+  width: 95vw;
+  height: 10vh;
+  background-color: #007849;
+  color: white;
+  text-align: right;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  padding-right: 5vw;  
+}
+
+#drawbox{
+  position: relative;
+  width: 75vw;
+  height: 70vh;
+  margin-left: 20vw;
+  margin-top: 2vh;  
+}
+
 h1{
-  margin: 50px;
-  text-align: center;
-  font-size: 48px;
+  margin: 10px;
+  text-align: right;
+  font-size: 36px;
   font-family: "Lucida Console", Monaco, monospace;
 }
 
@@ -21,12 +40,12 @@ td{
 
 svg g{
   font-size: 20px;
-  color: #fff;
+  color: black;
 }
 
 select{
   background-color: inherit;
-  color: white;
+  color: cornflowerblue;
   border: none;
   font-size: 2rem;
 }
@@ -39,33 +58,54 @@ option{
   color: blue;
 }
 
-.footers{
-  height: 5vw;
+input{
+  text-align: center;
+  width: auto;
+}
+
+.footer {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  height: 10vh;
+  width: 100vw;
+  background-color: #007849;
+  color: white;
+  text-align: center;
+}
+
+#footer-table{
+  width: 100%;  
+  height: 100%;
+}
+
+#footer-table p{
+  font-size: 16px;
 }
 
 td{
   text-align: center;
+  align-content: center;
 }
 
 .axis path,
 .axis line {
   fill: none;
-  stroke: #fff;
+  stroke: black;
   shape-rendering: crispEdges;
 }
 
 .axis text {
-  fill: white;
+  fill: black;
 }
 /*
 .bar {
   fill: white;
 }
 */
-.bar:hover {
+.bar:hover {  
   fill: blue ;
 }
-
 
 .x.axis .tick{
   display: none;
@@ -83,8 +123,8 @@ td{
   line-height: 1;
   font-weight: bold;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  background: rgba(255, 255, 255, 0);
+  color: black;
   border-radius: 2px;
 }
 
@@ -112,8 +152,7 @@ td{
 
 #dropdown-panel{
   width: 70%;
-  margin-left: 25%;
-  margin-top: 2%;
+  margin-left: 25%;  
   border: none;
   display: inline-table;
 }
@@ -130,9 +169,10 @@ td{
 
 select{
   background-color: inherit;
-  color: white;
+  color: black;
   border: none;
-  font-size: 20px;
+  overflow: auto;
+  font-size: 18px;  
 }
 
 select:focus{
@@ -140,33 +180,64 @@ select:focus{
 }
 
 option{
-  color: blue;
+  color: black;
+  padding-top: 1%;  
 }
 
 
-/* hamburger CSS */
-
-.menu-container {
+.links {
   position: absolute;
-  width: 3rem;
-  height: 5rem;
-  overflow: hidden;
+  padding: 2em;
+  left: 3vw;
+  top: 20vh;
+  z-index: 3;
+  text-align: center;
+  border-right: 3pt solid rgba(220, 17, 17, 0.25);
+}
+
+.links p {
+  display: block;
+  color: black;  
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.links p:hover{
+  color: red;
+}
+
+
+
+/*
+#hamburger:checked ~ .content {
+  padding-left: 35vw;
+  transition: all .2s;
+  transition-delay: 0s;
+}
+*/
+
+
+/* hamburger CSS 
+
+.menu-container {  
+  width: 10%; 
+  height: 100%;   
   left: 0;
-  top: 0;
+  top: 2%;
   transition-delay: .3s;
 }
 
 .menu {
   position: relative;
-  width: 10rem;
-  height: 10rem;
-  background-color: #00bfff;
+  width: 100%;
+  height: 100%;
+  
+  border-width: 1px;
+  border-color: red;
   border-radius: 100%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  transition: all .3s;
 }
-
+*/
+/*
 #hamburger {
   display: none;  
 }
@@ -181,6 +252,7 @@ label {
   z-index: 2;
   cursor: pointer;
 }
+
 label:before {
   content: "";
   position: absolute;
@@ -194,42 +266,16 @@ label:before {
           transform: scale(2);
 }
 
+
 #hamburger:checked ~ .menu-container {
-  width: 30vw;
-  height: 100vh;
+  width: 20%;
+  height: 100%;
   transition-delay: 0s;
 }
 
 #hamburger:checked ~ .menu-container .menu {
-  width: 250vh;
-  height: 250vh;
+  width: 20%;
+  height: 100%;
   transition: all .3s;
 }
-
-.menu-container .links {
-  position: absolute;
-  left: 10vw;
-  top: 30vh;
-  z-index: 3;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.menu-container .links p {
-  display: block;
-  color: white;
-  font-size: 2rem;
-  text-decoration: none;
-}
-
-.menu-container .links p:hover{
-  color: red;
-}
-
-#hamburger:checked ~ .content {
-  padding-left: 35vw;
-  transition: all .2s;
-  transition-delay: 0s;
-}
-
+*/

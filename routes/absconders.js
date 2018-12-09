@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var asyncHandler = require('express-async-handler');
 
 router.get('/', function(req,res){
 	var db = req.db;

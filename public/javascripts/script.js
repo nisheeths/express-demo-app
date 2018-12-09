@@ -1,26 +1,22 @@
 
 
 
-var myJson, viewLevel = 0, viewString = 'जोन', xlabel = 'All', ylabel = "Pending case %", alertThreshold = 0.6, viewFlag = 0;
+var myJson, viewLevel = 0, viewString = 'ज़ोन', xlabel = 'समस्त', ylabel = " लंबित विवेचनायें %", alertThreshold = 0.6, viewFlag = 0;
 var formatPercent = d3.format(".0%");
 
-var win = window, docm = document, em = docm.documentElement, gin = document.body;
+var x_dim = document.getElementById("drawbox").offsetWidth;
+var y_dim = document.getElementById("drawbox").offsetHeight;
 
-var x_dim = win.innerWidth || em.clientWidth || gin.clientWidth;
-var y_dim = win.innerHeight || em.clientHeight || gin.clientHeight;
+var fromControl = document.querySelector('#from');
+var toControl = document.querySelector('#to');
 
-var margin = {top: 0.2*y_dim, right: 0.25*x_dim, bottom: 0.3*y_dim, left: 0.4*x_dim},
-    width = x_dim - margin.left - margin.right,
-    height = y_dim - margin.top - margin.bottom;
+var margin = { top: 0.1 * y_dim, right: 0.2 * x_dim, bottom: 0.2 * y_dim, left: 0.25 * x_dim },
+  width = x_dim - margin.left - margin.right,
+  height = y_dim - margin.top - margin.bottom;
 
-function type(d) {
-  d.frequency = +d.frequency;
-  return d;
-}
-
-function depopulateDropDowns(level){
-  var select = document.getElementById("s"+level);
-  while(select.options.length>0){
+function depopulateDropDowns(level) {
+  var select = document.getElementById("s" + level);
+  while (select.options.length > 0) {
     select.remove(0);
   }
   var el = document.createElement("option");
@@ -29,64 +25,84 @@ function depopulateDropDowns(level){
   select.appendChild(el);
 }
 
-function populateDropDowns(level, entityList){
-  for(l = level; l <= 3; l++){
+function populateDropDowns(level, entityList) {
+  for (l = level; l <= 3; l++) {
     depopulateDropDowns(l);                 // clean up old list before adding new list
   }
-  var select = document.getElementById("s"+level);
-  for(var i = 0; i < entityList.length; i++) {
-      var opt = entityList[i]._id;
-      var el = document.createElement("option");
-      el.textContent = opt;
-      el.value = opt;
-      el.onclick = function(d){
-        console.log('Clicked');
-      }
-      select.appendChild(el);
-      select.onchange = function(){
-        console.log(this.value);        
-        viewString = this.value;
-        user_input.api = user_input.api + '/' + this.value;
-      }
+  var select = document.getElementById("s" + level);
+  for (var i = 0; i < entityList.length; i++) {
+    var opt = entityList[i]._id;
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    el.onclick = function (d) {
+      console.log('Clicked');
+    }
+    select.appendChild(el);
+  }  
+  /*  select.onchange = function(){
+      console.log(this.value);        
+      viewString = this.value;
+      xlabel = this.value;
+      user_input.api = user_input.api + '/' + this.value;
+    }*/    
+}
+
+function dropdownUI(level){
+  var select = document.getElementById("s" + level);
+  select.onchange = function () {
+    var val = this.value;
+    viewString = val;
+    xlabel = val;
+    var newLevel = Number(this.id[1]);
+    var apiSet = user_input.api.split('/');
+    console.log(apiSet);
+    apiSet = apiSet.slice(0, newLevel + 1);
+    var tempApiString = [];
+    for (a in apiSet) {
+      tempApiString = tempApiString + apiSet[a] + '/';
+    }
+    console.log(tempApiString);
+    user_input.api = tempApiString + val;
   }
 }
 
-
-function setViewString(level){
-	switch(level){
-	case 0:
-    viewString = 'जोन';    
-	  break;
-	case 1:
-	  viewString = 'परिक्षेत्र';
-    	  break;
-	case 2:
-	  viewString = 'जनपद';
-	  break;
-	case 3:
-	  viewString = 'थाना';
-	  break;
-	default:
-	  viewString = 'जोन';
-	}
+function setViewString(level) {
+  switch (level) {
+    case 0:
+      viewString = 'ज़ोन';
+      break;
+    case 1:
+      viewString = 'परिक्षेत्र';
+      break;
+    case 2:
+      viewString = 'जनपद';
+      break;
+    case 3:
+      viewString = 'थाना';
+      break;
+    default:
+      viewString = 'ज़ोन';
+  }
 }
 
-function setAPIString(useCase){
+function setAPIString(useCase) {
   viewFlag = 0;
-  switch(useCase){
+  xlabel = 'समस्त';
+  switch (useCase) {
     case 1:
       user_input.api = "cases";
       viewLevel = 0;
-      setViewString(viewLevel);      
-      ylabel = "Pending case %";
+      setViewString(viewLevel);
+      ylabel = "लंबित विवेचनाएं %";
       formatPercent = d3.format(".0%");
       alertThreshold = 0.6;
       break;
     case 2:
       user_input.api = "absconders";
       viewLevel = 0;
-      setViewString(viewLevel); 
-      ylabel = "Arrest percentage";     
+      setViewString(viewLevel);
+      ylabel = "गिरफ्तार अपराधी %";
       formatPercent = d3.format(".0%");
       alertThreshold = 0.6;
       break;
@@ -94,7 +110,7 @@ function setAPIString(useCase){
       user_input.api = "property";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "Recovered property (Rs.)";
+      ylabel = "संपत्ति बरामदगी (रुपये)";
       formatPercent = d3.format("s");
       alertThreshold = 10000000;
       break;
@@ -102,7 +118,7 @@ function setAPIString(useCase){
       user_input.api = "casedelay";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "Case resolution time (days)";
+      ylabel = "विवेचना पूर्ति में लगा समय (दिन)";
       formatPercent = d3.format("s");
       alertThreshold = 90;
       break;
@@ -110,7 +126,7 @@ function setAPIString(useCase){
       user_input.api = "capturedelay";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "Delay in arrests (days)";
+      ylabel = "गिरफ़्तारी में विलम्ब (दिन)";
       formatPercent = d3.format("s");
       alertThreshold = 90;
       break;
@@ -118,7 +134,7 @@ function setAPIString(useCase){
       user_input.api = "complaints";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "Pending complaints %";
+      ylabel = "लंबित शिकायतें %";
       formatPercent = d3.format(".0%");
       alertThreshold = 0.6;
       break;
@@ -126,8 +142,8 @@ function setAPIString(useCase){
       viewFlag = 1;                // development flag to avoid front-end errors
       user_input.api = "contribs";
       viewLevel = 0;
-      viewString = 'All';
-      ylabel = "Relative contribution";
+      viewString = 'समस्त';
+      ylabel = "तुलनात्मक अंश";
       formatPercent = d3.format(".0%");
       alertThreshold = 1;
       break;
@@ -135,21 +151,26 @@ function setAPIString(useCase){
       user_input.api = "cases";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "Pending case %";
+      ylabel = "लंबित विवेचनाएं %";
       formatPercent = d3.format(".0%");
       alertThreshold = 0.6;
-    }
+  }
 }
 
-function load_data(clicked_id)
-{
-    setAPIString(parseInt(document.getElementById(clicked_id).value));
-    console.log(parseInt(document.getElementById(clicked_id).value));
-    svg.selectAll("*").remove();    
+function setNewDate(){
+  svg.selectAll("*").remove();
+  console.log('hi');
+  userAction(user_input.api);
+}
+
+function load_data(clicked_id) {
+  setAPIString(parseInt(document.getElementById(clicked_id).value));
+  console.log(parseInt(document.getElementById(clicked_id).value));
+  svg.selectAll("*").remove();
 }
 
 
-function drawGraph(data){
+function drawGraph(data) {
 
   var xAxis = d3.svg.axis()
     .scale(x)
@@ -161,121 +182,129 @@ function drawGraph(data){
     .orient("left")
     .tickFormat(formatPercent);
 
-  x.domain(data.map(function(d) { return d._id; }));
-  y.domain([0, d3.max(data, function(d) { return d.count; })]);
+  x.domain(data.map(function (d) { return d._id; }));
+  y.domain([0, d3.max(data, function (d) { return d.count; })]);
 
-svg.append("g")
+  svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis)
-  .append("text")
-    .attr("x", 260)
-    .attr("y", 50)
+    .append("text")
+    .attr("x", 0.5*width)
+    .attr("y", 0.15*height)
     .style("text-anchor", "middle")
     .text(xlabel);
 
 
-svg.append("g")
+  svg.append("g")
     .attr("class", "y axis")
     .call(yAxis)
-  .append("text")
+    .append("text")
     .attr("transform", "rotate(-90)")
-    .attr("x",-250)
-    .attr("y", -125)
+    .attr("x", -0.35 * width)
+    .attr("y", -0.35 * height)
     .attr("dy", "1.91em")
     .style("text-anchor", "middle")
     .text(ylabel);
 
-svg.selectAll(".bar")
+  svg.selectAll(".bar")
     .data(data)
-  .enter().append("rect")
+    .enter().append("rect")
     .attr("class", "bar")
-    .attr("x", function(d) { return x(d._id); })
+    .attr("x", function (d) { return x(d._id); })
     .attr("width", x.rangeBand())
-    .attr("y", function(d) { return y(d.count); })
-    .attr("height", function(d) { return height - y(d.count); })
-    .attr("fill", function(d){
-      if(d.count>alertThreshold){
+    .attr("y", function (d) { return y(d.count); })
+    .attr("height", function (d) { return height - y(d.count); })
+    .attr("fill", function (d) {
+      if (d.count > alertThreshold) {
         return "red";
-      } else{
-        return "white";
+      } else {
+        return "#0375B4";
       }
     })
     .on('mouseover', tip.show)
     .on('mouseout', tip.hide)
-    .on('click', function(d){
-	if(!event.detail || event.detail == 1){
-          console.log(d._id);
-          xlabel = d._id;
+    .on('click', function (d) {
+      if (!event.detail || event.detail == 1) {
+        console.log(d._id);
+        xlabel = d._id;
+        if(viewLevel<3){
           user_input.api = user_input.api + '/' + d._id;
-	  svg.selectAll("*").remove();
-	}
-	})
+          setViewString(viewLevel++);
+          svg.selectAll("*").remove();
+        }else{
+          console.log('nothing here');
+          alert('Nothing deeper');
+        }        
+      }
+    })
 }
 
-async function userAction (api) {
-  var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/'+api);
-  if(response.ok){
-	  myJson = await response.json(); //extract JSON from the http response
-    console.log(myJson); 
-    if(viewFlag==0){  
-      document.getElementById('dropdown-panel').style.display = 'none' 
-	    drawGraph(myJson[0]);
-      setViewString(viewLevel++);
-    } else if(viewFlag==1){
-      svg.selectAll("*").remove();    
+async function userAction(api) {
+  var dateAPIString  = '/' + fromControl.value.slice(0,4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0,4) + '/' + toControl.value.slice(5);
+  var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/' + api + dateAPIString);
+  if (response.ok) {
+    myJson = await response.json(); //extract JSON from the http response
+    console.log(myJson);
+    if (viewFlag == 0) {
+      document.getElementById('dropdown-panel').style.display = 'none'
+      drawGraph(myJson[0]);      
+    } else if (viewFlag == 1) {
+      svg.selectAll("*").remove();
       document.getElementById('dropdown-panel').style.display = 'inline-table';
       drawGraph(myJson[0]);
-      populateDropDowns(viewLevel, myJson[1]);
+      populateDropDowns(viewLevel, myJson[1]); 
+      dropdownUI(viewLevel);     
       viewLevel++;
     }
-	} else{
-    console.log('Resource not found');    
-		setAPIString(1);
-	}
+  } else {
+    console.log('Resource not found');
+   // svg.selectAll("*").remove();
+   // setAPIString(1);
+  }
 }
 
 
 var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+  .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
-    .range([height, 0]);
+  .range([height, 0]);
 
 var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom")
-    .tickSize(0);
+  .scale(x)
+  .orient("bottom")
+  .tickSize(0);
 
 var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(formatPercent);
+  .scale(y)
+  .orient("left")
+  .tickFormat(formatPercent);
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
-  .html(function(d) {
-    return "<strong>"+ viewString + "</strong> <span style='color:red'>" + d._id + "</span>";
+  .html(function (d) {
+    return "<strong>" + viewString + "</strong> <span style='color:red'>" + d._id + "</span> <br> <strong>" + "मूल्य" + "</strong> <span style='color:red'>" + d.count + "</span>";
   })
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var svg = d3.select("#drawbox").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 svg.call(tip);
 
 var user_input = {
-	apistring: "cases",
-	get api() {
-		return this.apistring;
-	},
-	set api(choice) {
-		this.apistring = choice;
-		userAction(choice);
-	}
+  apistring: "cases",
+  get api() {
+    return this.apistring;
+  },
+  set api(choice) {
+    this.apistring = choice;
+    userAction(choice);
+  }
 }
 
 
