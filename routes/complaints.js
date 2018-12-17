@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function (req, res) {
+router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (req, res) {
 	var db = req.db;
 	var collection = db.get("services");
 	collection.aggregate([{ $group: { _id: "$ZONE_NAME", count: { $sum: "$COMPLAINT_TOTAL" } } }, { $sort: { _id: 1 } }], function (e, total) {
@@ -12,6 +12,7 @@ router.get('/', function (req, res) {
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
+						output[i].count = Math.round(100*output[i].count)/100;
 					}
 				}
 			}
@@ -23,7 +24,7 @@ router.get('/', function (req, res) {
 });
 
 
-router.get('/:ZONE_NAME', function (req, res) {
+router.get('/:ZONE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (req, res) {
 	var db = req.db;
 	var collection = db.get("services");
 	collection.aggregate([{ $match: { "ZONE_NAME": req.params['ZONE_NAME'] } }, { $group: { _id: "$RANGE_NAME", "count": { $sum: "$COMPLAINT_TOTAL" } } }, { $sort: { _id: 1 } }], function (e, total) {
@@ -34,6 +35,7 @@ router.get('/:ZONE_NAME', function (req, res) {
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
+						output[i].count = Math.round(100*output[i].count)/100;
 					}
 				}
 			}
@@ -44,7 +46,7 @@ router.get('/:ZONE_NAME', function (req, res) {
 	});
 });
 
-router.get('/:ZONE_NAME/:RANGE_NAME', function (req, res) {
+router.get('/:ZONE_NAME/:RANGE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (req, res) {
 	var db = req.db;
 	var collection = db.get("services");
 	collection.aggregate([{ $match: { "RANGE_NAME": req.params['RANGE_NAME'] } }, { $group: { _id: "$DISTRICT", "count": { $sum: "$COMPLAINT_TOTAL" } } }, { $sort: { _id: 1 } }], function (e, total) {
@@ -55,6 +57,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME', function (req, res) {
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
+						output[i].count = Math.round(100*output[i].count)/100;
 					}
 				}
 			}
@@ -65,7 +68,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME', function (req, res) {
 	});
 });
 
-router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT', function (req, res) {
+router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (req, res) {
 	var db = req.db;
 	var collection = db.get("services");
 	collection.aggregate([{ $match: { "DISTRICT": req.params['DISTRICT'] } }, { $group: { _id: "$PS", "count": { $sum: "$COMPLAINT_TOTAL" } } }, { $sort: { _id: 1 } }], function (e, total) {
@@ -76,6 +79,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT', function (req, res) {
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
+						output[i].count = Math.round(100*output[i].count)/100;
 					}
 				}
 			}
@@ -85,6 +89,5 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT', function (req, res) {
 		});
 	});
 });
-
 
 module.exports = router;

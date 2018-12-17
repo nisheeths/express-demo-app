@@ -17,18 +17,19 @@ html
       p 
         strong अपराध सम्बन्धी
       p
-        select#crimes(onclick='load_data(this.id)', size="7")
+        select#crimes(onclick='load_data(this.id)', size="8")
           option(id="crime1" value='1') लंबित विवेचनायें
           option(id="crime2" value='2') गिरफ्तार अपराधी 
-          option(id="crime3" value='3') संपत्ति बरामदगी
+          option(id="crime3" value='3') बरामद संपत्ति 
           option(id="crime4" value='4') विवेचना पूर्ति विलम्ब
           option(id="crime5" value='5') गिरफ़्तारी में विलम्ब
           option(id="crime7" value='7') तुलनात्मक अंश
+          option(id="crime8" value='8') कालबद्ध विश्लेषण 
       p 
         strong नागरिक सेवाये
       p
         select#services(onclick='load_data(this.id)', size="2")
-          option(id="service1" value='6') कुल शिकायतें        
+          option(id="service1" value='6') लंबित शिकायतें        
     table#dropdown-panel
       tr
         td.dropdown-menu
@@ -51,6 +52,12 @@ html
           form.drop-form
             select#s3
               option All
+        td.dropdown-menu#headtab
+          p अपराध 
+            button.knobs  पुनः
+          form.drop-form
+            select#heads(multiple='yes', onclick='getSelectedHeads()')
+              option All
     #drawbox
     .footer
       table#footer-table
@@ -60,22 +67,24 @@ html
           td
             p तारीख (अंत)
           td
-            p Range
+            p चयन करें 
           td(style="border-left: 1pt solid white")
             p  लक्ष्मण रेखा
           td
-            p Set
+            p चयन करें 
         tr
           td
             input#from(type="month", name="from", min="2016-01", value="2016-01")
           td
-            input#to(type="month", name="to", max="2020-01", value="2016-12")
+            input#to(type="month", name="to", max="2020-01", value="2018-12")
           td
-            button#setdate(type="submit", onclick='setNewDate()')  पुनः 
+            button.knobs(type="submit", onclick='setNewDate()')  पुनः 
           td(style="border-left: 1pt solid white")
-            input#threshval(type="number", name="threshval", value=60)
+            input(type="number", id="thresh-update", value=0.6)
           td
-            button#updatethreshval(type="submit") पुनः 
+            button.knobs(type="submit", onclick='setAlertThreshold()') पुनः 
+    #bye
+      p .
     script(type='text/javascript', src='/javascripts/script.js')     
 
     

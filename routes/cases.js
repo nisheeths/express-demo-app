@@ -9,18 +9,21 @@ router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler(async (req
 	var data = await collection.aggregate(
 		[
 			{
-				$match:
+				$sample:
 				{
-					REG_YEAR: {
-						$gte: Number(req.params['FROM_YEAR']),
-						$lte: Number(req.params['TO_YEAR'])
-					},
-					REG_MONTH: {
-						$gte: Number(req.params['FROM_MONTH']),
-						$lte: Number(req.params['TO_MONTH'])
-					}
+					size: 50000
 				}
 			},
+			{
+				$match:
+				{
+					date:
+					{
+						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
+						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
+					}
+				}
+			},			
 			{
 				$group:
 				{
@@ -67,21 +70,16 @@ router.get('/:ZONE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler
 					"ZONE_NAME": req.params['ZONE_NAME']
 				}
 			},
-
 			{
 				$match:
 				{
-					REG_YEAR: {
-						$gte: Number(req.params['FROM_YEAR']),
-						$lte: Number(req.params['TO_YEAR'])
-					},
-					REG_MONTH: {
-						$gte: Number(req.params['FROM_MONTH']),
-						$lte: Number(req.params['TO_MONTH'])
+					date:
+					{
+						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
+						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
 					}
 				}
-			},
-
+			},			
 			{
 				$group:
 				{
@@ -131,16 +129,13 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', 
 			{
 				$match:
 				{
-					REG_YEAR: {
-						$gte: Number(req.params['FROM_YEAR']),
-						$lte: Number(req.params['TO_YEAR'])
-					},
-					REG_MONTH: {
-						$gte: Number(req.params['FROM_MONTH']),
-						$lte: Number(req.params['TO_MONTH'])
+					date:
+					{
+						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
+						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
 					}
 				}
-			},
+			},			
 			{
 				$group:
 				{
@@ -190,16 +185,13 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:T
 			{
 				$match:
 				{
-					REG_YEAR: {
-						$gte: Number(req.params['FROM_YEAR']),
-						$lte: Number(req.params['TO_YEAR'])
-					},
-					REG_MONTH: {
-						$gte: Number(req.params['FROM_MONTH']),
-						$lte: Number(req.params['TO_MONTH'])
+					date:
+					{
+						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
+						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
 					}
 				}
-			},
+			},			
 			{
 				$group:
 				{

@@ -17,6 +17,7 @@ var caseDelayRouter = require('./routes/casedelay');
 var captureDelayRouter = require('./routes/capturedelay');
 var complaintsRouter = require('./routes/complaints');
 var contribsRouter = require('./routes/contribs');
+var timeseriesRouter = require('./routes/timeseries');
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use('/casedelay', caseDelayRouter);
 app.use('/capturedelay', captureDelayRouter);
 app.use('/complaints', complaintsRouter);
 app.use('/contribs', contribsRouter);
+app.use('/timeseries', timeseriesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

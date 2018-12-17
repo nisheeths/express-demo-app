@@ -1,7 +1,7 @@
 
 
 
-var myJson, viewLevel = 0, viewString = 'ज़ोन', xlabel = 'समस्त', ylabel = " लंबित विवेचनायें %", alertThreshold = 0.6, viewFlag = 0;
+var myJson, viewLevel = 0, listIdx = [0], viewString = 'ज़ोन', xlabel = 'समस्त', ylabel = " लंबित विवेचनायें %", alertThreshold = 0.6, viewFlag = 0;
 var formatPercent = d3.format(".0%");
 
 var x_dim = document.getElementById("drawbox").offsetWidth;
@@ -9,10 +9,22 @@ var y_dim = document.getElementById("drawbox").offsetHeight;
 
 var fromControl = document.querySelector('#from');
 var toControl = document.querySelector('#to');
+var thresholdControl = document.querySelector('#thresh-update');
 
-var margin = { top: 0.1 * y_dim, right: 0.2 * x_dim, bottom: 0.2 * y_dim, left: 0.25 * x_dim },
+var margin = { top: 0.1 * y_dim, right: 0.1 * x_dim, bottom: 0.3 * y_dim, left: 0.15 * x_dim },
   width = x_dim - margin.left - margin.right,
   height = y_dim - margin.top - margin.bottom;
+
+String.prototype.hashCode = function () {
+  var hash = 0, i, chr;
+  if (this.length === 0) return hash;
+  for (i = 0; i < this.length; i++) {
+    chr = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
 
 function depopulateDropDowns(level) {
   var select = document.getElementById("s" + level);
@@ -39,16 +51,33 @@ function populateDropDowns(level, entityList) {
       console.log('Clicked');
     }
     select.appendChild(el);
-  }  
-  /*  select.onchange = function(){
-      console.log(this.value);        
-      viewString = this.value;
-      xlabel = this.value;
-      user_input.api = user_input.api + '/' + this.value;
-    }*/    
+  }
 }
 
-function dropdownUI(level){
+function depopulateCrimeHeadDropdown() {
+  var select = document.getElementById("heads");
+  while (select.options.length > 0) {
+    select.remove(0);
+  }
+  var el = document.createElement("option");
+  el.textContent = 'All';
+  el.value = 'All';
+  select.appendChild(el);
+}
+
+
+function populateCrimeHeadDropDown(data) {
+  var select = document.getElementById("heads");
+  var list = data.map(function (d) { return d._id });
+  for (l in list) {
+    var el = document.createElement("option");
+    el.textContent = list[l];
+    el.value = list[l];
+    select.appendChild(el);
+  }
+}
+
+function dropdownUI(level) {
   var select = document.getElementById("s" + level);
   select.onchange = function () {
     var val = this.value;
@@ -110,7 +139,7 @@ function setAPIString(useCase) {
       user_input.api = "property";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "संपत्ति बरामदगी (रुपये)";
+      ylabel = "संपत्ति बरामदगी (लाख रुपये)";
       formatPercent = d3.format("s");
       alertThreshold = 10000000;
       break;
@@ -119,7 +148,7 @@ function setAPIString(useCase) {
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "विवेचना पूर्ति में लगा समय (दिन)";
-      formatPercent = d3.format("s");
+      formatPercent = d3.format("d");
       alertThreshold = 90;
       break;
     case 5:
@@ -127,8 +156,8 @@ function setAPIString(useCase) {
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "गिरफ़्तारी में विलम्ब (दिन)";
-      formatPercent = d3.format("s");
-      alertThreshold = 90;
+      formatPercent = d3.format("d");
+      alertThreshold = 30;
       break;
     case 6:
       user_input.api = "complaints";
@@ -147,6 +176,15 @@ function setAPIString(useCase) {
       formatPercent = d3.format(".0%");
       alertThreshold = 1;
       break;
+    case 8:
+      viewFlag = 2;                // development flag to avoid front-end errors
+      user_input.api = "timeseries";
+      viewLevel = 0;
+      viewString = 'समस्त';
+      ylabel = "दाखिल विवेचनाएं";
+      formatPercent = d3.format("d");
+      alertThreshold = 100;
+      break;
     default:
       user_input.api = "cases";
       viewLevel = 0;
@@ -155,18 +193,104 @@ function setAPIString(useCase) {
       formatPercent = d3.format(".0%");
       alertThreshold = 0.6;
   }
+  document.getElementById("thresh-update").value = alertThreshold;
 }
 
-function setNewDate(){
+function setNewDate() {
   svg.selectAll("*").remove();
   console.log('hi');
   userAction(user_input.api);
+}
+
+function setAlertThreshold() {
+  alertThreshold = Number(thresholdControl.value);
+}
+
+function getSelectedHeads() {
+  var select = document.querySelector("#heads");
+  var list = [...select.options].filter(option => option.selected).map(option => option.value);
+  // hacking the crime heads list for now
+  var heads = ["Rioting", "Housebreaking", "Dacoity", "Loot", "Murder", "Dowry Murder", "Rape", "Kidnapping for ransom", "Robbery", "Molestation", "Gambling", "Corruption", "Narcotics", "Tax evasion", "Illegal arms", "Unlawful Activities", "Cow slaughter", "SC/ST atrocities", "Cybercrime", "POCSO", "Encounters", "Anti-social activity"];
+  listIdx = [];
+  for (l in list) {
+    listIdx.push(heads.indexOf(list[l]));
+  }
 }
 
 function load_data(clicked_id) {
   setAPIString(parseInt(document.getElementById(clicked_id).value));
   console.log(parseInt(document.getElementById(clicked_id).value));
   svg.selectAll("*").remove();
+}
+
+var secret = prompt("Please enter the passcode", "passcode");
+
+while (secret.hashCode() !==
+  -2079557215) {
+  prompt("Please enter the passcode", "passcode");
+}
+
+
+function setupLineAxes(data, list) {
+  console.log('hello');
+  svg.selectAll("*").remove();
+  var arr = [];
+  for (l in list) {
+    arr.push(data[list[l]]);
+  }
+  temp = arr.map(function (d) { return d.count });
+  tvals = [];
+  for (t in temp) {
+    tvals.push(Math.max(...temp[t]));
+  }
+  maxval = Math.max(...tvals);
+
+  newdata = [];
+  for (t in data[0].ticks) {
+    newdata.push({ _id: data[0].ticks[t], count: data[0].count[t] });
+  }
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .tickSize(0);
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(formatPercent);
+
+  x.domain(newdata.map(function (d) { return d._id; }));
+  y.domain([0, maxval]);
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-65)")
+    .append("text")
+    .attr("x", 0.5 * width)
+    .attr("y", 0.15 * height)
+    .style("text-anchor", "middle")
+    .text(xlabel);
+
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -0.2 * width)
+    .attr("y", -0.3 * height)
+    .attr("dy", "1.91em")
+    .style("text-anchor", "middle")
+    .text(ylabel);
+
+
 }
 
 
@@ -189,9 +313,14 @@ function drawGraph(data) {
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis)
+    .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-65)")
     .append("text")
-    .attr("x", 0.5*width)
-    .attr("y", 0.15*height)
+    .attr("x", 0.5 * width)
+    .attr("y", -0.8 * height)
     .style("text-anchor", "middle")
     .text(xlabel);
 
@@ -201,8 +330,8 @@ function drawGraph(data) {
     .call(yAxis)
     .append("text")
     .attr("transform", "rotate(-90)")
-    .attr("x", -0.35 * width)
-    .attr("y", -0.35 * height)
+    .attr("x", -0.2 * width)
+    .attr("y", -0.3 * height)
     .attr("dy", "1.91em")
     .style("text-anchor", "middle")
     .text(ylabel);
@@ -228,42 +357,117 @@ function drawGraph(data) {
       if (!event.detail || event.detail == 1) {
         console.log(d._id);
         xlabel = d._id;
-        if(viewLevel<3){
+        if (viewFlag == 0) {
+          if (viewLevel < 3) {
+            user_input.api = user_input.api + '/' + d._id;
+            viewLevel++;
+            svg.selectAll("*").remove();
+          } else {
+            console.log('nothing here');
+            alert('Nothing deeper');
+          }
+        } else if (viewLevel < 4) {
           user_input.api = user_input.api + '/' + d._id;
-          setViewString(viewLevel++);
+          viewLevel++;
           svg.selectAll("*").remove();
-        }else{
+        } else {
           console.log('nothing here');
           alert('Nothing deeper');
-        }        
+        }
       }
     })
 }
 
+
+function drawLine(data) {
+
+  // reformat data input to make it look like the others
+  newdata = [];
+  for (t in data.ticks) {
+    newdata.push({ ticks: data.ticks[t], count: data.count[t], _id: data._id });
+  }
+
+  var yVals = newdata.map(function(d){ return y(d.count)});
+/*
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .tickSize(0);
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(formatPercent);
+
+  x.domain(newdata.map(function (d) { return d._id; }));
+  y.domain([0, d3.max(newdata, function (d) { return d.count; })]);
+*/
+  var lineGen = d3.svg.line()
+    .x(function (d) {
+      return x(d.ticks);
+    })
+    .y(function (d) {
+      return y(d.count);
+    })
+    .interpolate("basis");
+
+  
+  svg.append("path")
+    .attr('d', lineGen(newdata))
+    .attr('stroke', 'green')
+    .attr('stroke-width', 2)
+    .attr('fill', 'none')
+    //.on('mouseover', tip.show)
+    //.on('mouseout', tip.hide);
+
+  svg.selectAll()
+    .data(newdata).enter()
+    .append('text')
+    .html(d => d._id)
+    .attr('fill', "blue")
+    .attr('alignment-baseline', 'middle')
+    .attr('x', width)
+    .attr('dx', '.2em')
+    .attr('y', yVals[yVals.length - 1]); 
+}
+
 async function userAction(api) {
-  var dateAPIString  = '/' + fromControl.value.slice(0,4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0,4) + '/' + toControl.value.slice(5);
+  var dateAPIString = '/' + fromControl.value.slice(0, 4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0, 4) + '/' + toControl.value.slice(5);
   var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/' + api + dateAPIString);
   if (response.ok) {
     myJson = await response.json(); //extract JSON from the http response
     console.log(myJson);
     if (viewFlag == 0) {
       document.getElementById('dropdown-panel').style.display = 'none'
-      drawGraph(myJson[0]);      
+      drawGraph(myJson[0]);
+      setViewString(viewLevel);
     } else if (viewFlag == 1) {
       svg.selectAll("*").remove();
       document.getElementById('dropdown-panel').style.display = 'inline-table';
+      document.getElementById('headtab').style.display = 'none';
       drawGraph(myJson[0]);
-      populateDropDowns(viewLevel, myJson[1]); 
-      dropdownUI(viewLevel);     
+      populateDropDowns(viewLevel, myJson[1]);
+      dropdownUI(viewLevel);
+      viewLevel++;
+    } else if (viewFlag == 2) {
+      svg.selectAll("*").remove();
+      document.getElementById('dropdown-panel').style.display = 'inline-table';
+      document.getElementById('headtab').style.display = 'inline-table';
+      populateCrimeHeadDropDown(myJson[0]);
+      setupLineAxes(myJson[0], listIdx);
+      for (li in listIdx) {
+        drawLine(myJson[0][listIdx[li]]);
+      }
+      populateDropDowns(viewLevel, myJson[1]);
+      dropdownUI(viewLevel);
       viewLevel++;
     }
   } else {
     console.log('Resource not found');
-   // svg.selectAll("*").remove();
-   // setAPIString(1);
+    // svg.selectAll("*").remove();
+    // setAPIString(1);
   }
 }
-
 
 var x = d3.scale.ordinal()
   .rangeRoundBands([0, width], .1);
