@@ -4,7 +4,7 @@
 
 # major changes
 
-# allow non-linear navigation for dropdowns as well as for bars
+# all done
 
 # minor changes
 
@@ -20,6 +20,8 @@
 
 
 # completed changes
+
+# allow non-linear navigation for dropdowns as well as for bars
 
 # giraftari mein vilamb --> giraftari mein ausat samay
 # vivechna purti vilamb --> vivechna nistaran mein ausat samay

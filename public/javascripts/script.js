@@ -38,6 +38,7 @@ function depopulateDropDowns(level) {
 }
 
 function populateDropDowns(level, entityList) {
+  level = level - 1;
   for (l = level; l <= 3; l++) {
     depopulateDropDowns(l);                 // clean up old list before adding new list
   }
@@ -77,8 +78,8 @@ function populateCrimeHeadDropDown(data) {
   }
 }
 
-function dropdownUI(level) {
-  var select = document.getElementById("s" + level);
+function dropdownUI(level) {  
+  var select = document.getElementById("s" + (level-1));
   select.onchange = function () {
     var val = this.value;
     viewString = val;
@@ -96,8 +97,9 @@ function dropdownUI(level) {
   }
 }
 
-/*
+
 function dropdownNonLinearUI(clicked_id) {
+  console.log(clicked_id);
   var select = document.getElementById(clicked_id);
   select.onchange = function () {
     var val = this.value;
@@ -119,7 +121,7 @@ function dropdownNonLinearUI(clicked_id) {
     //userAction(user_input.api);      
   }
 }
-*/
+
 
 function setViewString(level) {
   switch (level) {
@@ -262,6 +264,7 @@ function getSelectedHeads() {
 }
 
 function load_data(clicked_id) {
+  viewLevel = 1;
   setAPIString(parseInt(document.getElementById(clicked_id).value));
   console.log(parseInt(document.getElementById(clicked_id).value));
   svg.selectAll("*").remove();
@@ -402,9 +405,9 @@ function drawGraph(data) {
         console.log(d._id);
         xlabel = d._id;
         if (viewFlag == 0) {
-          if (viewLevel < 3) {
+          if (viewLevel < 4) {
             user_input.api = user_input.api + '/' + d._id;
-            viewLevel++;
+           // viewLevel++;
             svg.selectAll("*").remove();
           } else {
             console.log('nothing here');
@@ -412,7 +415,7 @@ function drawGraph(data) {
           }
         } else if (viewLevel < 4) {
           user_input.api = user_input.api + '/' + d._id;
-          viewLevel++;
+          //viewLevel++;
           svg.selectAll("*").remove();
         } else {
           console.log('nothing here');
@@ -469,6 +472,7 @@ function drawLine(data) {
 async function userAction(api) {
   var dateAPIString = '/' + fromControl.value.slice(0, 4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0, 4) + '/' + toControl.value.slice(5);
   var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/' + api + dateAPIString);
+  viewLevel = api.split('/').length;
   if (response.ok) {
     myJson = await response.json(); //extract JSON from the http response
     console.log(myJson);
