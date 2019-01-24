@@ -19,10 +19,10 @@ html
       p
         select#crimes(onclick='load_data(this.id)', size="8")
           option(id="crime1" value='1') लंबित विवेचनायें
-          option(id="crime2" value='2') गिरफ्तार अपराधी 
+          option(id="crime2" value='2') वांछित अपराधी 
           option(id="crime3" value='3') बरामद संपत्ति 
-          option(id="crime4" value='4') विवेचना पूर्ति विलम्ब
-          option(id="crime5" value='5') गिरफ़्तारी में विलम्ब
+          option(id="crime4" value='4') विवेचना निस्तारण औसत समय
+          option(id="crime5" value='5') गिरफ़्तारी में औसत समय 
           option(id="crime7" value='7') तुलनात्मक अंश
           option(id="crime8" value='8') कालबद्ध विश्लेषण 
       p 
@@ -54,7 +54,7 @@ html
               option All
         td.dropdown-menu#headtab
           p अपराध 
-            button.knobs  पुनः
+            button.knobs(onclick='svg.selectAll("*").remove(); userAction(user_input.api);')  पुनः
           form.drop-form
             select#heads(multiple='yes', onclick='getSelectedHeads()')
               option All
@@ -79,9 +79,10 @@ html
             input#to(type="month", name="to", max="2020-01", value="2018-12")
           td
             button.knobs(type="submit", onclick='setNewDate()')  पुनः 
-          td(style="border-left: 1pt solid white")
-            input(type="number", id="thresh-update", value=0.6)
-          td
+          td#threshUIdisplay(style="border-left: 1pt solid white")
+            input(type="number", id="thresh-update", value=60, onmouseover='console.log("hi")')
+            span#units(style="padding-left: 5pt") %
+          td#threshUIbutton
             button.knobs(type="submit", onclick='setAlertThreshold()') पुनः 
     #bye
       p .

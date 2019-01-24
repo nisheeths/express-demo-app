@@ -1,8 +1,8 @@
 
 
 
-var myJson, viewLevel = 0, listIdx = [0], viewString = 'ज़ोन', xlabel = 'समस्त', ylabel = " लंबित विवेचनायें %", alertThreshold = 0.6, viewFlag = 0;
-var formatPercent = d3.format(".0%");
+var myJson, viewLevel = 0, listIdx = [0], viewString = 'ज़ोन', xlabel = 'समस्त', ylabel = " लंबित विवेचनायें %", alertThreshold = 60, viewFlag = 0;
+var formatPercent = d3.format("d");
 
 var x_dim = document.getElementById("drawbox").offsetWidth;
 var y_dim = document.getElementById("drawbox").offsetHeight;
@@ -96,6 +96,31 @@ function dropdownUI(level) {
   }
 }
 
+/*
+function dropdownNonLinearUI(clicked_id) {
+  var select = document.getElementById(clicked_id);
+  select.onchange = function () {
+    var val = this.value;
+    viewString = val;
+    xlabel = val;
+    var newLevel = Number(this.id[1]);
+    for (l = newLevel+1; l <= 3; l++) {
+      depopulateDropDowns(l);                 // clean up old list before adding new list
+    }
+    var apiSet = user_input.api.split('/');
+    console.log(apiSet);
+    apiSet = apiSet.slice(0, newLevel + 1);
+    var tempApiString = [];
+    for (a in apiSet) {
+      tempApiString = tempApiString + apiSet[a] + '/';
+    }
+    console.log(tempApiString);
+    user_input.api = tempApiString + val;  
+    //userAction(user_input.api);      
+  }
+}
+*/
+
 function setViewString(level) {
   switch (level) {
     case 0:
@@ -118,22 +143,32 @@ function setViewString(level) {
 function setAPIString(useCase) {
   viewFlag = 0;
   xlabel = 'समस्त';
+  var threshCases = [1, 2, 4, 5, 6];
+  if (threshCases.includes(useCase)) {
+    document.getElementById("threshUIdisplay").style.display = '';
+    document.getElementById("threshUIbutton").style.display = '';
+  } else {
+    document.getElementById("threshUIdisplay").style.display = 'none';
+    document.getElementById("threshUIbutton").style.display = 'none';
+  }
   switch (useCase) {
     case 1:
       user_input.api = "cases";
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "लंबित विवेचनाएं %";
-      formatPercent = d3.format(".0%");
-      alertThreshold = 0.6;
+      formatPercent = d3.format("d");
+      alertThreshold = 60;
+      document.getElementById("units").textContent = "%";
       break;
     case 2:
       user_input.api = "absconders";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "गिरफ्तार अपराधी %";
-      formatPercent = d3.format(".0%");
-      alertThreshold = 0.6;
+      ylabel = "वांछित अपराधी %";
+      formatPercent = d3.format("d");
+      alertThreshold = 50;
+      document.getElementById("units").textContent = "%";
       break;
     case 3:
       user_input.api = "property";
@@ -141,31 +176,35 @@ function setAPIString(useCase) {
       setViewString(viewLevel);
       ylabel = "संपत्ति बरामदगी (लाख रुपये)";
       formatPercent = d3.format("s");
-      alertThreshold = 10000000;
+      alertThreshold = 10000;
+      document.getElementById("units").textContent = "लाख रे";
       break;
     case 4:
       user_input.api = "casedelay";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "विवेचना पूर्ति में लगा समय (दिन)";
+      ylabel = "विवेचना निस्तारण औसत समय (दिन)";
       formatPercent = d3.format("d");
       alertThreshold = 90;
+      document.getElementById("units").textContent = "दिन";
       break;
     case 5:
       user_input.api = "capturedelay";
       viewLevel = 0;
       setViewString(viewLevel);
-      ylabel = "गिरफ़्तारी में विलम्ब (दिन)";
+      ylabel = "गिरफ़्तारी में औसत समय (दिन)";
       formatPercent = d3.format("d");
       alertThreshold = 30;
+      document.getElementById("units").textContent = "दिन";
       break;
     case 6:
       user_input.api = "complaints";
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "लंबित शिकायतें %";
-      formatPercent = d3.format(".0%");
-      alertThreshold = 0.6;
+      formatPercent = d3.format("d");
+      alertThreshold = 60;
+      document.getElementById("units").textContent = "%";
       break;
     case 7:
       viewFlag = 1;                // development flag to avoid front-end errors
@@ -173,8 +212,9 @@ function setAPIString(useCase) {
       viewLevel = 0;
       viewString = 'समस्त';
       ylabel = "तुलनात्मक अंश";
-      formatPercent = d3.format(".0%");
-      alertThreshold = 1;
+      formatPercent = d3.format(".2f");
+      alertThreshold = 0.2;
+      document.getElementById("units").textContent = "";
       break;
     case 8:
       viewFlag = 2;                // development flag to avoid front-end errors
@@ -184,26 +224,30 @@ function setAPIString(useCase) {
       ylabel = "दाखिल विवेचनाएं";
       formatPercent = d3.format("d");
       alertThreshold = 100;
+      document.getElementById("units").textContent = "संख्या";
       break;
     default:
       user_input.api = "cases";
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "लंबित विवेचनाएं %";
-      formatPercent = d3.format(".0%");
-      alertThreshold = 0.6;
+      formatPercent = d3.format("d");
+      alertThreshold = 60;
+      document.getElementById("units").textContent = "%";
   }
+
   document.getElementById("thresh-update").value = alertThreshold;
 }
 
 function setNewDate() {
-  svg.selectAll("*").remove();
-  console.log('hi');
+  svg.selectAll("*").remove();  
   userAction(user_input.api);
 }
 
 function setAlertThreshold() {
   alertThreshold = Number(thresholdControl.value);
+  svg.selectAll("*").remove();  
+  userAction(user_input.api);
 }
 
 function getSelectedHeads() {
@@ -214,7 +258,7 @@ function getSelectedHeads() {
   listIdx = [];
   for (l in list) {
     listIdx.push(heads.indexOf(list[l]));
-  }
+  }  
 }
 
 function load_data(clicked_id) {
@@ -222,14 +266,14 @@ function load_data(clicked_id) {
   console.log(parseInt(document.getElementById(clicked_id).value));
   svg.selectAll("*").remove();
 }
-
+/*
 var secret = prompt("Please enter the passcode", "passcode");
 
 while (secret.hashCode() !==
   -2079557215) {
-  prompt("Please enter the passcode", "passcode");
+  prompt("Please enter the passcode");
 }
-
+*/
 
 function setupLineAxes(data, list) {
   console.log('hello');
@@ -351,8 +395,8 @@ function drawGraph(data) {
         return "#0375B4";
       }
     })
-    .on('mouseover', tip.show)
-    .on('mouseout', tip.hide)
+    .on('mouseover', bartip.show)
+    .on('mouseout', bartip.hide)
     .on('click', function (d) {
       if (!event.detail || event.detail == 1) {
         console.log(d._id);
@@ -387,21 +431,21 @@ function drawLine(data) {
     newdata.push({ ticks: data.ticks[t], count: data.count[t], _id: data._id });
   }
 
-  var yVals = newdata.map(function(d){ return y(d.count)});
-/*
-  var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom")
-    .tickSize(0);
-
-  var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(formatPercent);
-
-  x.domain(newdata.map(function (d) { return d._id; }));
-  y.domain([0, d3.max(newdata, function (d) { return d.count; })]);
-*/
+  var yVals = newdata.map(function (d) { return y(d.count) });
+  /*
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickSize(0);
+  
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .tickFormat(formatPercent);
+  
+    x.domain(newdata.map(function (d) { return d._id; }));
+    y.domain([0, d3.max(newdata, function (d) { return d.count; })]);
+  */
   var lineGen = d3.svg.line()
     .x(function (d) {
       return x(d.ticks);
@@ -411,24 +455,15 @@ function drawLine(data) {
     })
     .interpolate("basis");
 
-  
-  svg.append("path")
+
+  var line = svg.append("path")
     .attr('d', lineGen(newdata))
     .attr('stroke', 'green')
     .attr('stroke-width', 2)
-    .attr('fill', 'none')
-    //.on('mouseover', tip.show)
-    //.on('mouseout', tip.hide);
+    .attr('fill', 'none');
 
-  svg.selectAll()
-    .data(newdata).enter()
-    .append('text')
-    .html(d => d._id)
-    .attr('fill', "blue")
-    .attr('alignment-baseline', 'middle')
-    .attr('x', width)
-    .attr('dx', '.2em')
-    .attr('y', yVals[yVals.length - 1]); 
+  line.data(newdata).on('mouseover', linetip.show).on('mouseout', linetip.hide);
+
 }
 
 async function userAction(api) {
@@ -453,6 +488,7 @@ async function userAction(api) {
       svg.selectAll("*").remove();
       document.getElementById('dropdown-panel').style.display = 'inline-table';
       document.getElementById('headtab').style.display = 'inline-table';
+      depopulateCrimeHeadDropdown();
       populateCrimeHeadDropDown(myJson[0]);
       setupLineAxes(myJson[0], listIdx);
       for (li in listIdx) {
@@ -485,12 +521,20 @@ var yAxis = d3.svg.axis()
   .orient("left")
   .tickFormat(formatPercent);
 
-var tip = d3.tip()
+var bartip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) {
-    return "<strong>" + viewString + "</strong> <span style='color:red'>" + d._id + "</span> <br> <strong>" + "मूल्य" + "</strong> <span style='color:red'>" + d.count + "</span>";
+    return "<strong>" + viewString + "</strong> <span style='color:black'>" + d._id + "</span> <br> <strong>" + "मूल्य" + "</strong> <span style='color:black'>" + d.count + "</span>";
   })
+
+var linetip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-1, 0])
+  .html(function (d) {
+    return d._id;
+  })
+
 
 var svg = d3.select("#drawbox").append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -498,7 +542,8 @@ var svg = d3.select("#drawbox").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.call(tip);
+svg.call(bartip);
+svg.call(linetip);
 
 var user_input = {
   apistring: "cases",

@@ -65,7 +65,7 @@ var crimeHeads = [
 		patterns: [/NARCOTIC/i] 
 	},
 	{
-		key: "Tax evasion",
+		key: "Illicit liquor",
 		patterns: [/EXCISE/i] 
 	},
 	{

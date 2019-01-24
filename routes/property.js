@@ -25,8 +25,9 @@ router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler(async (req
 				{
 					"RECOVERED_VALUE":
 					 {
-						 $gt: 0
-					}
+						 $gt: 0,
+						 $lt: 1000000000
+					}					
 				}
 			},
 			{

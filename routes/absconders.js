@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var asyncHandler = require('express-async-handler');
+var wantedSections = require('../utils/heinousCrimeHeads');
 
 router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler(async (req, res, next) => {
 	var db = req.db;
@@ -22,7 +23,18 @@ router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler(async (req
 						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
 					}
 				}
+			},
+			{
+				$unwind: "$ACT_SECTION"
 			},			
+			{
+				$match: {
+					ACT_SECTION:
+					{
+						$in: wantedSections
+					}
+				}
+			},
 			{
 				$group:
 				{
@@ -76,6 +88,17 @@ router.get('/:ZONE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler
 					{
 						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
 						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
+					}
+				}
+			},
+			{
+				$unwind: "$ACT_SECTION"
+			},			
+			{
+				$match: {
+					ACT_SECTION:
+					{
+						$in: wantedSections
 					}
 				}
 			},			
@@ -135,6 +158,17 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', 
 						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
 					}
 				}
+			},
+			{
+				$unwind: "$ACT_SECTION"
+			},			
+			{
+				$match: {
+					ACT_SECTION:
+					{
+						$in: wantedSections
+					}
+				}
 			},			
 			{
 				$group:
@@ -189,6 +223,17 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:T
 					{
 						$gte: new Date(req.params['FROM_YEAR'] + "-" + req.params['FROM_MONTH']),
 						$lte: new Date(req.params['TO_YEAR'] + "-" + req.params['TO_MONTH'])
+					}
+				}
+			},
+			{
+				$unwind: "$ACT_SECTION"
+			},			
+			{
+				$match: {
+					ACT_SECTION:
+					{
+						$in: wantedSections
 					}
 				}
 			},			

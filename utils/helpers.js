@@ -12,7 +12,7 @@ module.exports = function () {
             }
         }
         // keeping a floor of 1% for pending complaints
-        pendingCount = Math.max(0.01, Math.round(100 * pendingCount / (count + 1.0)) / 100);
+        pendingCount = Math.max(1, Math.round(100 * pendingCount / (count + 1.0)));
         return pendingCount;
     },
         this.getArrestPercent = function (list, name) {
@@ -26,8 +26,8 @@ module.exports = function () {
                     }
                 }
             }
-            // keeping a floor of 1% for arrests
-            arrestCount = Math.max(0.01, Math.round(100 * (count - arrestCount) / (count + 1.0)) / 100);
+            // keeping a floor of 1% for outstanding arrestees percentage
+            arrestCount = Math.max(1, Math.round(100 * (count - arrestCount) / (count + 1.0)));
             return arrestCount;
         },
         this.checkCrimePattern = function (crimeHeads, crime, record) {
