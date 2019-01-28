@@ -4,13 +4,14 @@
 
 # major changes
 
-# all done
+# non-linear navigation for bar chart
 
 # minor changes
 
+# display view position in bar viz
+# contribs in percent
 
 # hover values should be absolute counts, not percentages
-
 
 # Category C changes
 

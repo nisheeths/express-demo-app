@@ -178,7 +178,7 @@ function setAPIString(useCase) {
       setViewString(viewLevel);
       ylabel = "संपत्ति बरामदगी (लाख रुपये)";
       formatPercent = d3.format("s");
-      alertThreshold = 10000;
+      alertThreshold = 10000000;
       document.getElementById("units").textContent = "लाख रे";
       break;
     case 4:
@@ -215,7 +215,7 @@ function setAPIString(useCase) {
       viewString = 'समस्त';
       ylabel = "तुलनात्मक अंश";
       formatPercent = d3.format(".2f");
-      alertThreshold = 0.2;
+      alertThreshold = 0.8;
       document.getElementById("units").textContent = "";
       break;
     case 8:
@@ -230,6 +230,7 @@ function setAPIString(useCase) {
       break;
     default:
       user_input.api = "cases";
+      viewFlag = -1;
       viewLevel = 0;
       setViewString(viewLevel);
       ylabel = "लंबित विवेचनाएं %";
@@ -470,8 +471,8 @@ function drawLine(data) {
 }
 
 async function userAction(api) {
-  var dateAPIString = '/' + fromControl.value.slice(0, 4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0, 4) + '/' + toControl.value.slice(5);
-  var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/' + api + dateAPIString);
+  var dateAPIString = '/' + fromControl.value.slice(0, 4) + '/' + fromControl.value.slice(5) + '/' + toControl.value.slice(0, 4) + '/' + toControl.value.slice(5);  
+  var response = await fetch('http://srivalab.cse.iitk.ac.in:3000/' + api + dateAPIString);  
   viewLevel = api.split('/').length;
   if (response.ok) {
     myJson = await response.json(); //extract JSON from the http response
@@ -479,7 +480,7 @@ async function userAction(api) {
     if (viewFlag == 0) {
       document.getElementById('dropdown-panel').style.display = 'none'
       drawGraph(myJson[0]);
-      setViewString(viewLevel);
+      setViewString(viewLevel-1);
     } else if (viewFlag == 1) {
       svg.selectAll("*").remove();
       document.getElementById('dropdown-panel').style.display = 'inline-table';
@@ -503,7 +504,7 @@ async function userAction(api) {
       viewLevel++;
     }
   } else {
-    console.log('Resource not found');
+    console.log(response);
     // svg.selectAll("*").remove();
     // setAPIString(1);
   }

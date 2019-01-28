@@ -4,6 +4,37 @@ body{
   font-family: Verdana, Geneva, sans-serif;
 }
 
+#loginform{  
+  margin-top: 35vh;  
+}
+
+.loginputs {  
+  font-size: 24px;
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: blue;
+  margin-bottom: 20px;
+}
+
+.loginputs:focus {
+  border-color: green
+}
+
+.logindiv{
+  text-align: center;
+}
+
+.loginbutton {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
 #topbar{
   width: 95vw;
   height: 10vh;

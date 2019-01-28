@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title  CCTNS Dashboard
+    link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+  body
+    form#loginform(action='/login', method='post')
+      div.logindiv        
+        input.loginputs(placeholder="User ID", type='text', name='username')
+        br
+      div.logindiv        
+        input.loginputs(placeholder="Password", type='password', name='password')
+      div.logindiv
+        input.loginbutton(type='submit', value='Submit')
+script(src='http://d3js.org/d3.v3.min.js')
+script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
+//script(type='text/javascript', src='/javascripts/script.js')
