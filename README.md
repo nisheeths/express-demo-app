@@ -25,6 +25,7 @@
 # added login management
 # allow non-linear navigation for dropdowns as well as for bars
 
+# added a logout button
 # contribs in percent
 # giraftari mein vilamb --> giraftari mein ausat samay
 # vivechna purti vilamb --> vivechna nistaran mein ausat samay
