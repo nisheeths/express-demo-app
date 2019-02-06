@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var request = require('request');
+var parse = require('xml-parser');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
@@ -27,20 +29,44 @@ var timeseriesRouter = require('./routes/timeseries');
 // passport strategy setup
 
 passport.use(new Strategy(
-  function(username, password, cb) {
-    userdb.users.findByUsername(username, function(err, user) {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      if (user.password != password) { return cb(null, false); }
-      return cb(null, user);
+  function (username, password, cb) {
+    var urlbody = 'http://164.100.181.132/CASLoginService/CASLoginDetails.asmx/UserDetails';
+    var reqbody = {
+      strLoginID: username,
+      strPassword: password,
+      strClintIP: '10.234.2.34',
+      strMACAddress: 'fg:5d:d8:e5:e8',
+      strServerIP: '172.27.21.213'
+    }
+    console.log("hi");
+    request.post({ url: urlbody, form: reqbody }, function (error, response, body) {
+      var obj = parse(body);
+      var loginFlag = Number(obj.root.content);
+      console.log("hi again");
+      if (loginFlag == 1) {
+        console.log('Happy days');
+        console.log(username);
+        console.log(password);
+        username = 'zyxq#sew324Tdf';
+        password = 'derjfgd@dtos37';
+      }
+      console.log('error:', error); // Print the error if one occurred
+      console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+      console.log('body:', Number(obj.root.content)); // Print the HTML for the Google homepage.      
+      userdb.users.findByUsername(username, function (err, user) {
+        if (err) { return cb(err); }
+        if (!user) { return cb(null, false); }
+        if (user.password != password) { return cb(null, false); }
+        return cb(null, user);
+      });
     });
-}));
+  }));
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function (user, cb) {
   cb(null, user.id);
 });
 
-passport.deserializeUser(function(id, cb) {
+passport.deserializeUser(function (id, cb) {
   userdb.users.findById(id, function (err, user) {
     if (err) { return cb(err); }
     cb(null, user);
@@ -74,12 +100,12 @@ app.get('/',
   });
 */
 
-app.get('/login',  function(req, res){ res.render('login');  });
-  
-app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/cases', failureRedirect: '/login' }));
-  
+app.get('/login', function (req, res) { res.render('login'); });
+
+app.post('/login', passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' }));
+
 app.get('/logout',
-  function(req, res){
+  function (req, res) {
     req.logout();
     res.redirect('/');
   });
@@ -97,14 +123,14 @@ app.get('/profile',
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 // Make our db accessible to our router
-app.use(function(req,res,next){
+app.use(function (req, res, next) {
   req.db = db;
   next();
 });
 
- 
 
- // all the other routes
+
+// all the other routes
 app.use('/', ensureLoggedIn('login'), indexRouter);
 app.use('/cases', ensureLoggedIn('login'), caseRouter);
 app.use('/absconders', ensureLoggedIn('login'), abscondRouter);
@@ -116,12 +142,12 @@ app.use('/contribs', ensureLoggedIn('login'), contribsRouter);
 app.use('/timeseries', ensureLoggedIn('login'), timeseriesRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

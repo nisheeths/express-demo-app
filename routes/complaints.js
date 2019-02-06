@@ -12,7 +12,7 @@ router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (req, res) {
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
-						output[i].count = Math.round(100*output[i].count)/100;
+						output[i].count = Math.round(100*output[i].count);
 					}
 				}
 			}
@@ -35,7 +35,7 @@ router.get('/:ZONE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', function (re
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
-						output[i].count = Math.round(100*output[i].count)/100;
+						output[i].count = Math.round(100*output[i].count);
 					}
 				}
 			}
@@ -57,7 +57,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', 
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
-						output[i].count = Math.round(100*output[i].count)/100;
+						output[i].count = Math.round(100*output[i].count);
 					}
 				}
 			}
@@ -79,7 +79,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:T
 				for (j = 0; j < pending.length; j++) {
 					if (total[i]._id == pending[j]._id) {
 						output[i].count = (pending[j].count * 1.0) / total[i].count;
-						output[i].count = Math.round(100*output[i].count)/100;
+						output[i].count = Math.round(100*output[i].count);
 					}
 				}
 			}

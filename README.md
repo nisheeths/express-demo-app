@@ -9,7 +9,7 @@
 # minor changes
 
 # display view position in bar viz
-# contribs in percent
+
 
 # hover values should be absolute counts, not percentages
 
@@ -25,6 +25,7 @@
 # added login management
 # allow non-linear navigation for dropdowns as well as for bars
 
+# contribs in percent
 # giraftari mein vilamb --> giraftari mein ausat samay
 # vivechna purti vilamb --> vivechna nistaran mein ausat samay
 # put in an upper bound for the property search to prevent two anomalous cases from Vrindavan PS in Mathura from clogging up the display

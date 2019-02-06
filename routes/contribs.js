@@ -83,7 +83,7 @@ router.get('/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler(async (req
 		crimeSum += vals[v].count;
 	}
 	for (v in vals) {
-		vals[v].count = Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
+		vals[v].count = 100*Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
 	}
 	res.json([vals, keys]);
 }));
@@ -173,7 +173,7 @@ router.get('/:ZONE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', asyncHandler
 		crimeSum += vals[v].count;
 	}
 	for (v in vals) {
-		vals[v].count = Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
+		vals[v].count = 100*Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
 	}
 	res.json([vals, keys]);
 }));
@@ -263,7 +263,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:TO_MONTH', 
 		crimeSum += vals[v].count;
 	}
 	for (v in vals) {
-		vals[v].count = Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
+		vals[v].count = 100*Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
 	}
 	res.json([vals, keys]);
 }));
@@ -354,7 +354,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:FROM_YEAR/:FROM_MONTH/:TO_YEAR/:T
 		crimeSum += vals[v].count;
 	}
 	for (v in vals) {
-		vals[v].count = Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
+		vals[v].count = 100*Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
 	}
 	res.json([vals, keys]);
 }));
@@ -445,7 +445,7 @@ router.get('/:ZONE_NAME/:RANGE_NAME/:DISTRICT/:PS/:FROM_YEAR/:FROM_MONTH/:TO_YEA
 		crimeSum += vals[v].count;
 	}
 	for (v in vals) {
-		vals[v].count = Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
+		vals[v].count = 100*Math.max(0.01, Math.round(100 * vals[v].count / crimeSum) / 100);
 	}
 	res.json([vals, keys]);
 }));

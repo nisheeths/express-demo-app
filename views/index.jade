@@ -7,13 +7,16 @@ html
     script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
     
   body    
-    #topbar
+    #topbar      
       p
         h1 CCTNS विश्लेषणात्मक प्रत्योक्षकारिक संधान
+        
     // input(type="checkbox" id="hamburger" name="hamburger")
     //label(for="hamburger")
     
-    .links                
+    .links 
+      button(type="submit", onclick="logoutUser()") 
+       img(src="/images/logout.png")               
       p 
         strong अपराध सम्बन्धी
       p

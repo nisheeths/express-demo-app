@@ -26,6 +26,10 @@ String.prototype.hashCode = function () {
   return hash;
 };
 
+function logoutUser(){
+  window.location.replace('http://srivalab.cse.iitk.ac.in:3000/logout');
+}
+
 function depopulateDropDowns(level) {
   var select = document.getElementById("s" + level);
   while (select.options.length > 0) {
@@ -213,10 +217,10 @@ function setAPIString(useCase) {
       user_input.api = "contribs";
       viewLevel = 0;
       viewString = 'समस्त';
-      ylabel = "तुलनात्मक अंश";
-      formatPercent = d3.format(".2f");
-      alertThreshold = 0.8;
-      document.getElementById("units").textContent = "";
+      ylabel = "तुलनात्मक अंश %";
+      formatPercent = d3.format("d");
+      alertThreshold = 80;
+      document.getElementById("units").textContent = "%";
       break;
     case 8:
       viewFlag = 2;                // development flag to avoid front-end errors
