@@ -43,6 +43,21 @@ module.exports = function () {
             }).reduce(function (sum, x) {
                 return sum = sum + x.count;
             }, 0);
+        },
+        this.getPendingComplaints = function (list, name) {
+            var count = 0;
+            var pendingCount = 0;
+            for (l in list) {
+                if (list[l]._id.var2 == name) {
+                    count += list[l].count;
+                    if (list[l]._id.var1 == 1) {
+                        pendingCount = list[l].count;
+                    }
+                }
+            }
+            // keeping a floor of 1% for pending complaints
+            pendingCount = Math.max(1, Math.round(100 * pendingCount / (count + 1.0)));
+            return pendingCount;
         }
 }
 
