@@ -220,9 +220,16 @@ function showButtons(style) {
   current_style = style;
   
 }
+function prettyJSON()
+{
+   var rd=$("#response").val();
+   $("#response").val(JSON.stringify(JSON.parse(rd), null, 2));
+}
 function callMongo()
          { 
            console.log("inside ajax call")
+	   $("#query").val(" ");
+           $("#response").val(" ");
            var queryText=$("#input").val();
            $.ajax({ 
                type: "GET",
@@ -233,7 +240,9 @@ function callMongo()
                   //console.log("data_arr0 "+data_arr[0]);
                   console.log("data_arr1 "+data_arr[1]);
                   $("#query").val(data_arr[1]);
-                  $("#response").val(data_arr[0]);
+                  $("#response").val(data_arr[0].replace(/NaN/g,"\"NaN\""));
+		  
+   		 //$("#response").val(JSON.stringify(JSON.parse(data_arr[0]), null, 2));
                },
                error: function (error) {
                   console.log('error; ' + eval(error));
