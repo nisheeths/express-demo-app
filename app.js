@@ -25,6 +25,12 @@ var complaintsRouter = require('./routes/complaints');
 var contribsRouter = require('./routes/contribs');
 var timeseriesRouter = require('./routes/timeseries');
 
+//Added for NLP search ********************/
+var cons = require('consolidate')
+var exphbs  = require('express-handlebars')
+var hbs = exphbs.create();
+var search = require('./routes/search');
+//**************************************** */
 
 // passport strategy setup
 
@@ -77,6 +83,10 @@ passport.deserializeUser(function (id, cb) {
 
 var app = express();
 
+//Added for NLP search ********************
+app.engine('jade', cons.jade);
+app.engine('html', hbs.engine);
+//**************************************** */
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -92,6 +102,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 /*
 app.get('/',
@@ -140,6 +152,9 @@ app.use('/capturedelay', ensureLoggedIn('login'), captureDelayRouter);
 app.use('/complaints', ensureLoggedIn('login'), complaintsRouter);
 app.use('/contribs', ensureLoggedIn('login'), contribsRouter);
 app.use('/timeseries', ensureLoggedIn('login'), timeseriesRouter);
+//Added for NLP search ********************
+app.use('/search',ensureLoggedIn('login'), search);
+//**************************************** */
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
